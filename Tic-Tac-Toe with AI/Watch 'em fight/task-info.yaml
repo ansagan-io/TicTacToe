@@ -305,6 +305,195 @@ files:
         }
     }
   learner_created: false
+- name: src/tictactoe/TicTacToe.java
+  visible: true
+  text: |
+    package tictactoe;
+
+    import java.util.Random;
+    import java.util.Scanner;
+
+    public class TicTacToe {
+        private static final Scanner scanner = new Scanner(System.in);
+        private static boolean turn = true;
+        private static final char[][] layoutMatrix = new char[3][3];
+        private static final Random random = new Random();
+
+        public static void startGame(){
+            for (int i = 0; i < 3; i++) {
+                for (int j = 0; j < 3; j++) {
+                    layoutMatrix[i][j] = ' ';
+                }
+            }
+            printLayout();
+            enterCoordinate();
+            /*System.out.print("Enter cells: ");
+            String cellLayout = scanner.nextLine();
+            while (cellLayout.length() != 9 || cellLayout.replaceAll("X", "").replaceAll("O", "").replaceAll("_", "").length() > 0) {
+                System.out.print("Enter cells: ");
+                cellLayout = scanner.nextLine();
+            }*/
+        }
+
+        private static void enterCoordinate() {
+            if (turn) {
+                System.out.print("Enter the coordinates: ");
+                String[] inputSplit = scanner.nextLine().split(" ", 2);
+                int[] xy = new int[2];
+                try {
+                    for (int i = 1; i >= 0; i--) {
+                        xy[i] = Integer.parseInt(inputSplit[i]);
+                    }
+                } catch (NumberFormatException e) {
+                    System.out.println("You should enter numbers!");
+                    enterCoordinate();
+                }
+                int x = 3 - xy[1];
+                int y = xy[0] - 1;
+                if (isBetweenOneAndThree(x, y)) {
+                    System.out.println("Coordinates should be from 1 to 3!");
+                    enterCoordinate();
+                } else if(isOccupied(x, y)){
+                    System.out.println("This cell is occupied! Choose another one!");
+                    enterCoordinate();
+                } else {
+                    turn = false;
+                    acceptCoordinates(x, y, 'X');
+                }
+            } else {
+                AIEasyTurn();
+            }
+
+        }
+
+        private static boolean isBetweenOneAndThree(int x, int y) {
+            return x < 0 || x > 2 || y < 0 || y > 2;
+        }
+
+        private static boolean isOccupied(int x, int y) {
+            return layoutMatrix[x][y] == 'X' || layoutMatrix[x][y] == 'O';
+        }
+
+        private static void AIEasyTurn() {
+            turn = true;
+            int x = random.nextInt(3);
+            int y = random.nextInt(3);
+            while (isOccupied(x, y)){
+                x = random.nextInt(3);
+                y = random.nextInt(3);
+            }
+            System.out.println("Making move level \"easy\"");
+            acceptCoordinates(x, y, 'O');
+        }
+
+        private static void acceptCoordinates(int x, int y, char sign) {
+            layoutMatrix[x][y] = sign;
+            printLayout();
+            checkWhoWin();
+        }
+
+        private static void checkWhoWin() {
+            int[] eightLineScoresOfX = countScores('X');
+            int[] eightLineScoresOfO = countScores('O');
+            for (int i = 0; i < 8; i++) {
+                if(eightLineScoresOfX[i] == 3 && eightLineScoresOfO[i] == 0) {
+                    System.out.println("X wins");
+                    System.exit(0);
+                } else if (eightLineScoresOfX[i] == 0 && eightLineScoresOfO[i] == 3) {
+                    System.out.println("O wins");
+                    System.exit(0);
+                }
+            }
+            if (count() == 0) {
+                System.out.println("Draw");
+                System.exit(0);
+            } else {
+                enterCoordinate();
+            }
+        }
+
+        private static int count() {
+            int count = 0;
+            for (int i = 0; i < 3; i++) {
+                for (int j = 0; j < 3; j++) {
+                    if (layoutMatrix[i][j] == ' ') {
+                        count++;
+                    }
+                }
+            }
+            return count;
+        }
+
+        public static void printLayout(){
+            System.out.println("---------");
+            for (char[] first:layoutMatrix) {
+                System.out.print("| ");
+                for (char chere:first) {
+                    System.out.print(chere + " ");
+                }
+                System.out.println("|");
+            }
+            System.out.println("---------");
+        }
+
+        private static int[] countScores(char x) {
+            int[] countedLine = new int[8];
+            int length = 0;
+            int count = 0;
+            for (int i = 0; i < 3; i++) {
+                for (int j = 0; j < 3; j++) {
+                    if (layoutMatrix[i][j] == x) {
+                        count++;
+                    }
+                }
+                countedLine[length] = count;
+                count = 0;
+                length++;
+            }
+
+            for (int i = 0; i < 3; i++) {
+                for (int j = 0; j < 3; j++) {
+                    if (layoutMatrix[j][i] == x) {
+                        count++;
+                    }
+                }
+                countedLine[length] = count;
+                count = 0;
+                length++;
+            }
+
+            for (int i = 0; i < 3; i++) {
+                if (layoutMatrix[i][i] == x) {
+                    count++;
+                }
+            }
+            countedLine[length] = count;
+            length++;
+            count = 0;
+            for (int i = 0; i < 3; i++) {
+                if (layoutMatrix[i][2-i] == x) {
+                    count++;
+                }
+            }
+            countedLine[length] = count;
+
+            return countedLine;
+        }
+    }
+  learner_created: true
+- name: src/tictactoe/User.java
+  visible: true
+  learner_created: true
+- name: src/tictactoe/EasyLevel.java
+  visible: true
+  learner_created: true
+- name: src/tictactoe/Player.java
+  visible: true
+  learner_created: true
 feedback_link: https://hyperskill.org/projects/81/stages/449/implement
-status: Unchecked
+status: Solved
+feedback:
+  message: Congratulations! Continue on <a href="https://hyperskill.org/projects/81/stages/449/implement">JetBrains
+    Academy</a>
+  time: Tue, 25 Aug 2020 13:42:15 UTC
 record: -1

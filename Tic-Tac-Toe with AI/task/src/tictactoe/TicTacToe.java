@@ -1,94 +1,96 @@
 package tictactoe;
 
-import java.util.Random;
 import java.util.Scanner;
 
 public class TicTacToe {
     private static final Scanner scanner = new Scanner(System.in);
     private static boolean turn = true;
     private static final char[][] layoutMatrix = new char[3][3];
-    private static final Random random = new Random();
+    private static Player player1;
+    private static Player player2;
 
-    public static void startGame(){
+    public static void startApp(){
         for (int i = 0; i < 3; i++) {
             for (int j = 0; j < 3; j++) {
                 layoutMatrix[i][j] = ' ';
             }
         }
+
+        String command = "";
+        String[] commands = command.split(" ");
+        while (commands.length != 3) {
+            System.out.print("Input command: ");
+            command = scanner.nextLine();
+            commands = command.split(" ");
+            if (commands.length != 3 || !commands[0].equals("start")){
+                System.out.println("Bad parameters!");
+            }
+
+        }
+
+
+        switch (commands[0]) {
+            case "exit": System.exit(0);
+            case "start": startGame(commands[1], commands[2]);
+            default: System.exit(0);
+        }
+    }
+
+    private static void startGame(String firstPlayer, String secondPlayer) {
+        player1 = createPlayer(firstPlayer, 'X');
+        player2 = createPlayer(secondPlayer, 'O');
         printLayout();
         enterCoordinate();
-        /*System.out.print("Enter cells: ");
-        String cellLayout = scanner.nextLine();
-        while (cellLayout.length() != 9 || cellLayout.replaceAll("X", "").replaceAll("O", "").replaceAll("_", "").length() > 0) {
-            System.out.print("Enter cells: ");
-            cellLayout = scanner.nextLine();
-        }*/
+    }
+
+    private static Player createPlayer(String player, char sign) {
+        Player player3 = null;
+        switch (player) {
+            case "user": player3 = new User(sign);
+                break;
+            case "easy": player3 = new EasyLevel(sign);
+                break;
+            default: System.exit(0);
+        }
+        return player3;
     }
 
     private static void enterCoordinate() {
+        int[] coors;
         if (turn) {
-            System.out.print("Enter the coordinates: ");
-            String[] inputSplit = scanner.nextLine().split(" ", 2);
-            int[] xy = new int[2];
-            try {
-                for (int i = 1; i >= 0; i--) {
-                    xy[i] = Integer.parseInt(inputSplit[i]);
-                }
-            } catch (NumberFormatException e) {
-                System.out.println("You should enter numbers!");
-                enterCoordinate();
-            }
-            if (isOutOfOneAndThree(xy[0], xy[1])) {
-                System.out.println("Coordinates should be from 1 to 3!");
-                enterCoordinate();
-            } else if(isOccupied(xy[0], xy[1])){
-                System.out.println("This cell is occupied! Choose another one!");
-                enterCoordinate();
-            } else {
-                turn = false;
-                acceptCoordinates(xy[0], xy[1]);
-            }
+            coors = player1.getXY();
+            turn = false;
+            acceptCoordinates(coors[0], coors[1], player1.getSign());
+
         } else {
-            AIEasyTurn();
+            coors = player2.getXY();
+            turn = true;
+            acceptCoordinates(coors[0], coors[1], player2.getSign());
+
         }
-
-    }
-
-    private static boolean isOutOfOneAndThree(int i, int i1) {
-        return (i < 1 || i > 3) || (i1 < 1 || i1 > 3);
-    }
-
-    private static boolean isOccupied(int i, int i1) {
-        return layoutMatrix[3-i][i-1] == 'X' || layoutMatrix[3-i1][i1-1] == 'O';
-    }
-
-    private static void AIEasyTurn() {
-        int x = random.nextInt(4);
-        int y = random.nextInt(4);
-        while (isOutOfOneAndThree(x, y) || isOccupied(y, y)){
-            x = random.nextInt(4);
-            y = random.nextInt(4);
-        }
-        
-    }
-
-    private static void acceptCoordinates(int x, int y) {
-//        int xCount = count(layoutMatrix, 'X');
-//        int yCount = count(layoutMatrix, 'O');
-//        if (xCount <= yCount) {
-//            layoutMatrix[3-x][y-1] = 'X';
-//        } else {
-//            layoutMatrix[3-x][y-1] = 'O';
-//        }
-        layoutMatrix[3-x][y-1] = 'X';
         printLayout();
         checkWhoWin();
+    }
+
+    public static boolean isOutOfOneAndThree(int x, int y) {
+        return x < 0 || x > 2 || y < 0 || y > 2;
+    }
+
+    public static boolean isOccupied(int x, int y) {
+        return layoutMatrix[x][y] != ' ';
+    }
+
+
+    private static void acceptCoordinates(int x, int y, char sign) {
+        layoutMatrix[x][y] = sign;
     }
 
     private static void checkWhoWin() {
         int[] eightLineScoresOfX = countScores('X');
         int[] eightLineScoresOfO = countScores('O');
+        int sum = 0;
         for (int i = 0; i < 8; i++) {
+            sum += eightLineScoresOfX[i] + eightLineScoresOfO[i];
             if(eightLineScoresOfX[i] == 3 && eightLineScoresOfO[i] == 0) {
                 System.out.println("X wins");
                 System.exit(0);
@@ -97,41 +99,13 @@ public class TicTacToe {
                 System.exit(0);
             }
         }
-        if (count() == 0) {
+        if (sum == 24) {
             System.out.println("Draw");
             System.exit(0);
         } else {
             enterCoordinate();
         }
     }
-
-    private static int count() {
-        int count = 0;
-        for (int i = 0; i < 3; i++) {
-            for (int j = 0; j < 3; j++) {
-                if (layoutMatrix[i][j] == ' ') {
-                    count++;
-                }
-            }
-        }
-        return count;
-    }
-
-/*    public static char[][] parseCellLayout(String cellLayout) {
-        char[][] temp = new char[3][3];
-        short count = 0;
-        for (int i = 0; i < 3; i++) {
-            for (int j = 0; j < 3; j++) {
-                if (cellLayout.charAt(count) == '_') {
-                    temp[i][j] = ' ';
-                } else {
-                    temp[i][j] = cellLayout.charAt(count);
-                }
-                count++;
-            }
-        }
-        return temp;
-    }*/
 
     public static void printLayout(){
         System.out.println("---------");
