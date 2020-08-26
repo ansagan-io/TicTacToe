@@ -1,40 +1,43 @@
 package tictactoe;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Scanner;
 
 public class TicTacToe {
     private static final Scanner scanner = new Scanner(System.in);
     private static boolean turn = true;
     private static final char[][] layoutMatrix = new char[3][3];
+
     private static Player player1;
     private static Player player2;
 
+    static Map<Integer, int[][]> coordinates = new HashMap<>();
+
     public static void startApp(){
+        coordinates = createCoordinates();
         for (int i = 0; i < 3; i++) {
             for (int j = 0; j < 3; j++) {
                 layoutMatrix[i][j] = ' ';
             }
         }
 
-        String command = "";
-        String[] commands = command.split(" ");
-        while (commands.length != 3) {
+        while (true) {
             System.out.print("Input command: ");
-            command = scanner.nextLine();
-            commands = command.split(" ");
+            String command = scanner.nextLine();
+            String[] commands = command.split(" ");
+            if (commands[0].equals("exit")) {
+                System.exit(0);
+            }
             if (commands.length != 3 || !commands[0].equals("start")){
                 System.out.println("Bad parameters!");
+                continue;
             }
-
-        }
-
-
-        switch (commands[0]) {
-            case "exit": System.exit(0);
-            case "start": startGame(commands[1], commands[2]);
-            default: System.exit(0);
+            startGame(commands[1], commands[2]);
         }
     }
+
+
 
     private static void startGame(String firstPlayer, String secondPlayer) {
         player1 = createPlayer(firstPlayer, 'X');
@@ -49,6 +52,8 @@ public class TicTacToe {
             case "user": player3 = new User(sign);
                 break;
             case "easy": player3 = new EasyLevel(sign);
+                break;
+            case "medium": player3 = new MediumLevel(sign);
                 break;
             default: System.exit(0);
         }
@@ -119,7 +124,7 @@ public class TicTacToe {
         System.out.println("---------");
     }
 
-    private static int[] countScores(char x) {
+    static int[] countScores(char x) {
         int[] countedLine = new int[8];
         int length = 0;
         int count = 0;
@@ -161,5 +166,26 @@ public class TicTacToe {
         countedLine[length] = count;
 
         return countedLine;
+    }
+
+    private static Map<Integer,int[][]> createCoordinates() {
+        Map<Integer,int[][]> map = new HashMap<>();
+        int[][] zero = {{0, 0},{0, 1},{0, 2}};
+        map.put(0, zero);
+        int[][] first = {{1, 0},{1, 1},{1, 2}};
+        map.put(1, first);
+        int[][] second = {{2, 0},{2, 1},{2, 2}};
+        map.put(2, second);
+        int[][] third = {{0, 0},{1, 0},{2, 0}};
+        map.put(3, third);
+        int[][] forth = {{0, 1},{1, 1},{2, 1}};
+        map.put(4, forth);
+        int[][] fifth = {{0, 2},{1, 2},{2, 2}};
+        map.put(5, fifth);
+        int[][] sixth = {{0, 0},{1, 1},{2, 2}};
+        map.put(6, sixth);
+        int[][] seventh = {{0, 2},{1, 1},{2, 0}};
+        map.put(7, seventh);
+        return map;
     }
 }

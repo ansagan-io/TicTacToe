@@ -300,6 +300,281 @@ files:
         }
     }
   learner_created: false
+- name: src/tictactoe/Player.java
+  visible: true
+  text: |
+    package tictactoe;
+
+    public class Player {
+        private char sign;
+
+        public Player(char sign) {
+            this.sign = sign;
+        }
+
+        public int[] getXY() {
+            return new int[3];
+        }
+
+        public void setSign(char sign) {
+            this.sign = sign;
+        }
+
+        public char getSign() {
+            return sign;
+        }
+    }
+  learner_created: true
+- name: src/tictactoe/TicTacToe.java
+  visible: true
+  text: |
+    package tictactoe;
+
+    import java.util.Scanner;
+
+    public class TicTacToe {
+        private static final Scanner scanner = new Scanner(System.in);
+        private static boolean turn = true;
+        private static final char[][] layoutMatrix = new char[3][3];
+        private static Player player1;
+        private static Player player2;
+
+        public static void startApp(){
+            for (int i = 0; i < 3; i++) {
+                for (int j = 0; j < 3; j++) {
+                    layoutMatrix[i][j] = ' ';
+                }
+            }
+
+            String command = "";
+            String[] commands = command.split(" ");
+            while (commands.length != 3) {
+                System.out.print("Input command: ");
+                command = scanner.nextLine();
+                commands = command.split(" ");
+                if (commands.length != 3 || !commands[0].equals("start")){
+                    System.out.println("Bad parameters!");
+                }
+
+            }
+
+
+            switch (commands[0]) {
+                case "exit": System.exit(0);
+                case "start": startGame(commands[1], commands[2]);
+                default: System.exit(0);
+            }
+        }
+
+        private static void startGame(String firstPlayer, String secondPlayer) {
+            player1 = createPlayer(firstPlayer, 'X');
+            player2 = createPlayer(secondPlayer, 'O');
+            printLayout();
+            enterCoordinate();
+        }
+
+        private static Player createPlayer(String player, char sign) {
+            Player player3 = null;
+            switch (player) {
+                case "user": player3 = new User(sign);
+                    break;
+                case "easy": player3 = new EasyLevel(sign);
+                    break;
+                default: System.exit(0);
+            }
+            return player3;
+        }
+
+        private static void enterCoordinate() {
+            int[] coors;
+            if (turn) {
+                coors = player1.getXY();
+                turn = false;
+                acceptCoordinates(coors[0], coors[1], player1.getSign());
+
+            } else {
+                coors = player2.getXY();
+                turn = true;
+                acceptCoordinates(coors[0], coors[1], player2.getSign());
+
+            }
+            printLayout();
+            checkWhoWin();
+        }
+
+        public static boolean isOutOfOneAndThree(int x, int y) {
+            return x < 0 || x > 2 || y < 0 || y > 2;
+        }
+
+        public static boolean isOccupied(int x, int y) {
+            return layoutMatrix[x][y] != ' ';
+        }
+
+
+        private static void acceptCoordinates(int x, int y, char sign) {
+            layoutMatrix[x][y] = sign;
+        }
+
+        private static void checkWhoWin() {
+            int[] eightLineScoresOfX = countScores('X');
+            int[] eightLineScoresOfO = countScores('O');
+            int sum = 0;
+            for (int i = 0; i < 8; i++) {
+                sum += eightLineScoresOfX[i] + eightLineScoresOfO[i];
+                if(eightLineScoresOfX[i] == 3 && eightLineScoresOfO[i] == 0) {
+                    System.out.println("X wins");
+                    System.exit(0);
+                } else if (eightLineScoresOfX[i] == 0 && eightLineScoresOfO[i] == 3) {
+                    System.out.println("O wins");
+                    System.exit(0);
+                }
+            }
+            if (sum == 24) {
+                System.out.println("Draw");
+                System.exit(0);
+            } else {
+                enterCoordinate();
+            }
+        }
+
+        public static void printLayout(){
+            System.out.println("---------");
+            for (char[] first:layoutMatrix) {
+                System.out.print("| ");
+                for (char chere:first) {
+                    System.out.print(chere + " ");
+                }
+                System.out.println("|");
+            }
+            System.out.println("---------");
+        }
+
+        private static int[] countScores(char x) {
+            int[] countedLine = new int[8];
+            int length = 0;
+            int count = 0;
+            for (int i = 0; i < 3; i++) {
+                for (int j = 0; j < 3; j++) {
+                    if (layoutMatrix[i][j] == x) {
+                        count++;
+                    }
+                }
+                countedLine[length] = count;
+                count = 0;
+                length++;
+            }
+
+            for (int i = 0; i < 3; i++) {
+                for (int j = 0; j < 3; j++) {
+                    if (layoutMatrix[j][i] == x) {
+                        count++;
+                    }
+                }
+                countedLine[length] = count;
+                count = 0;
+                length++;
+            }
+
+            for (int i = 0; i < 3; i++) {
+                if (layoutMatrix[i][i] == x) {
+                    count++;
+                }
+            }
+            countedLine[length] = count;
+            length++;
+            count = 0;
+            for (int i = 0; i < 3; i++) {
+                if (layoutMatrix[i][2-i] == x) {
+                    count++;
+                }
+            }
+            countedLine[length] = count;
+
+            return countedLine;
+        }
+    }
+  learner_created: true
+- name: src/tictactoe/EasyLevel.java
+  visible: true
+  text: |
+    package tictactoe;
+
+    import java.util.Random;
+
+    public class EasyLevel extends Player{
+        private final Random random = new Random();
+        public EasyLevel(char sign) {
+            super(sign);
+        }
+
+        @Override
+        public int[] getXY() {
+            int x = random.nextInt(3);
+            int y = random.nextInt(3);
+            while (TicTacToe.isOccupied(x, y)){
+                x = random.nextInt(3);
+                y = random.nextInt(3);
+            }
+            System.out.println("Making move level \"easy\"");
+            return new int[]{x, y};
+        }
+    }
+  learner_created: true
+- name: src/tictactoe/User.java
+  visible: true
+  text: |
+    package tictactoe;
+
+    import java.util.Scanner;
+
+    public class User extends Player{
+        private final Scanner scanner= new Scanner(System.in);
+
+        public User(char sign) {
+            super(sign);
+        }
+
+        @Override
+        public int[] getXY() {
+            while (true) {
+                int[] xy = new int[2];
+                while (true) {
+                    try {
+                        System.out.print("Enter the coordinates: ");
+                        String[] inputSplit = scanner.nextLine().split(" ", 2);
+                        if (inputSplit.length != 2) {
+                            System.out.println("Coordinate should be at least two value");
+                            continue;
+                        }
+                        for (int i = 0; i < 2; i++) {
+                            xy[i] = Integer.parseInt(inputSplit[i]);
+                        }
+                        break;
+                    } catch (NumberFormatException e) {
+                        System.out.println("You should enter numbers!");
+                    }
+                }
+                int x = 3 - xy[1];
+                int y= xy[0] - 1;
+                if (TicTacToe.isOutOfOneAndThree(x, y)) {
+                    System.out.println("Coordinates should be from 1 to 3!");
+                    continue;
+                } else if(TicTacToe.isOccupied(x, y)){
+                    System.out.println("This cell is occupied! Choose another one!");
+                    continue;
+                }
+                return new int[]{x, y};
+            }
+        }
+    }
+  learner_created: true
+- name: src/tictactoe/MediumLevel.java
+  visible: true
+  learner_created: true
 feedback_link: https://hyperskill.org/projects/81/stages/450/implement
-status: Unchecked
-record: -1
+status: Solved
+feedback:
+  message: Congratulations! Continue on <a href="https://hyperskill.org/projects/81/stages/450/implement">JetBrains
+    Academy</a>
+  time: Wed, 26 Aug 2020 13:48:03 UTC
+record: 4
