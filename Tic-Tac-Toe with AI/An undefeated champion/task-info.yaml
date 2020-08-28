@@ -681,5 +681,18 @@ files:
     }
   learner_created: true
 feedback_link: https://hyperskill.org/projects/81/stages/451/implement
-status: Unchecked
+status: Failed
+feedback:
+  message: |-
+    Wrong answer in test #5
+
+    No fields found
+
+    Please find below the output of your program during this failed test.
+    Note that the &#39;&gt;&#39; character indicates the beginning of the input line.
+
+    ---
+
+    Input command: &gt; start user hard
+  time: Fri, 28 Aug 2020 16:48:06 UTC
 record: -1

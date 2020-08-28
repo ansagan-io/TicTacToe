@@ -11,22 +11,14 @@ public class TicTacToe {
 
     static Map<Integer, int[]> map = new HashMap<>();
 
-//    private static final char[][] layoutMatrix = new char[3][3];
-
     private static final char[] layoutArray = {' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '};
 
     private static Player player1;
     private static Player player2;
 
-    //static Map<Integer, int[][]> coordinates = new HashMap<>();
-
     public static void startApp() {
         createCoordinates();
-        /*for (int i = 0; i < 3; i++) {
-            for (int j = 0; j < 3; j++) {
-                layoutMatrix[i][j] = ' ';
-            }
-        }*/
+
         while (true) {
             System.out.print("Input command: ");
             String command = scanner.nextLine();
@@ -42,12 +34,9 @@ public class TicTacToe {
         }
     }
 
-
     private static void startGame(String firstPlayer, String secondPlayer) {
         player1 = createPlayer(firstPlayer, 'X');
-        System.out.println(player1.getSign() + " " + player1.getClass());
         player2 = createPlayer(secondPlayer, 'O');
-        System.out.println(player2.getSign() + " " + player1.getClass());
         printLayoutArray();
         enterCoordinateArr();
     }
@@ -86,10 +75,6 @@ public class TicTacToe {
         printLayoutArray();
         checkWhoWin();
     }
-
-
-
-
 
     protected static boolean isOccupiedArr(int x) {
         return layoutArray[x] != ' ';
@@ -135,7 +120,6 @@ public class TicTacToe {
         System.out.println("---------");
     }
 
-
     public static int[][] countScoresArr(char sign0, char sign1) {
         int[][] scores = new int[2][8];
         int length = 0;
@@ -157,7 +141,6 @@ public class TicTacToe {
         return scores;
     }
 
-
     public static void createCoordinates() {
         int[] zero = {0, 1, 2};
         map.put(0, zero);
@@ -176,111 +159,6 @@ public class TicTacToe {
         int[] seventh = {2, 4, 6};
         map.put(7, seventh);
     }
-
-    /*private static void enterCoordinate() {
-        int[] coors;
-        if (turn) {
-            coors = player1.getXY();
-            turn = false;
-            acceptCoordinates(coors[0], coors[1], player1.getSign());
-
-        } else {
-            coors = player2.getXY();
-            turn = true;
-            acceptCoordinates(coors[0], coors[1], player2.getSign());
-
-        }
-        printLayout();
-        checkWhoWin();
-    }*/
-
-/*    protected static boolean isOutOfOneAndThree(int x, int y) {
-        return x < 0 || x > 2 || y < 0 || y > 2;
-    }*/
-
-
-/*    protected static boolean isOccupied(int x, int y) {
-        return layoutMatrix[x][y] != ' ';
-    }*/
-
-/*    private static void acceptCoordinates(int x, int y, char sign) {
-        layoutMatrix[x][y] = sign;
-    }*/
-/*    public static void printLayout() {
-        System.out.println("---------");
-        for (char[] first : layoutMatrix) {
-            System.out.print("| ");
-            for (char chere : first) {
-                System.out.print(chere + " ");
-            }
-            System.out.println("|");
-        }
-        System.out.println("---------");
-    }*/
-    /*static int[] countScores(char x) {
-        int[] countedLine = new int[8];
-        int length = 0;
-        int count = 0;
-        for (int i = 0; i < 3; i++) {
-            for (int j = 0; j < 3; j++) {
-                if (layoutMatrix[i][j] == x) {
-                    count++;
-                }
-            }
-            countedLine[length] = count;
-            count = 0;
-            length++;
-        }
-
-        for (int i = 0; i < 3; i++) {
-            for (int j = 0; j < 3; j++) {
-                if (layoutMatrix[j][i] == x) {
-                    count++;
-                }
-            }
-            countedLine[length] = count;
-            count = 0;
-            length++;
-        }
-
-        for (int i = 0; i < 3; i++) {
-            if (layoutMatrix[i][i] == x) {
-                count++;
-            }
-        }
-        countedLine[length] = count;
-        length++;
-        count = 0;
-        for (int i = 0; i < 3; i++) {
-            if (layoutMatrix[i][2 - i] == x) {
-                count++;
-            }
-        }
-        countedLine[length] = count;
-
-        return countedLine;
-    }*/
-
-    /*private static Map<Integer, int[][]> createCoordinates() {
-        Map<Integer, int[][]> map = new HashMap<>();
-        int[][] zero = {{0, 0}, {0, 1}, {0, 2}};
-        map.put(0, zero);
-        int[][] first = {{1, 0}, {1, 1}, {1, 2}};
-        map.put(1, first);
-        int[][] second = {{2, 0}, {2, 1}, {2, 2}};
-        map.put(2, second);
-        int[][] third = {{0, 0}, {1, 0}, {2, 0}};
-        map.put(3, third);
-        int[][] forth = {{0, 1}, {1, 1}, {2, 1}};
-        map.put(4, forth);
-        int[][] fifth = {{0, 2}, {1, 2}, {2, 2}};
-        map.put(5, fifth);
-        int[][] sixth = {{0, 0}, {1, 1}, {2, 2}};
-        map.put(6, sixth);
-        int[][] seventh = {{0, 2}, {1, 1}, {2, 0}};
-        map.put(7, seventh);
-        return map;
-    }*/
 }
 
 
