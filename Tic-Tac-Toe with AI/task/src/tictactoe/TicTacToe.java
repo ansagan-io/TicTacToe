@@ -16,6 +16,10 @@ public class TicTacToe {
     private static Player player1;
     private static Player player2;
 
+    public static char[] getLayoutArray() {
+        return layoutArray;
+    }
+
     public static void startApp() {
         createCoordinates();
 
@@ -52,6 +56,9 @@ public class TicTacToe {
                 break;
             case "medium":
                 player3 = new MediumLevel(sign);
+                break;
+            case "hard":
+                player3 = new HardLevel(sign);
                 break;
             default:
                 System.exit(0);
