@@ -77,11 +77,11 @@ public class TicTacToe {
         checkWhoWin();
     }
 
-    public static boolean isOutOfOneAndThree(int x, int y) {
+    protected static boolean isOutOfOneAndThree(int x, int y) {
         return x < 0 || x > 2 || y < 0 || y > 2;
     }
 
-    public static boolean isOccupied(int x, int y) {
+    protected static boolean isOccupied(int x, int y) {
         return layoutMatrix[x][y] != ' ';
     }
 
