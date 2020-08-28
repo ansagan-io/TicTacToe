@@ -11,7 +11,7 @@ abstract class IntBinaryOperation {
     public abstract int perform();
 }
 
-class Addition extends IntBinaryOperation{
+class Addition extends IntBinaryOperation {
 
     public Addition(int firstArg, int secondArg) {
         super(firstArg, secondArg);

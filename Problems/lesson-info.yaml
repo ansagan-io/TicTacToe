@@ -23,3 +23,5 @@ content:
 - IntBinaryOperation
 - Users and WebSites
 - Shape hierarchy
+- Account Service
+- Compact strings with AsciiCharSequence

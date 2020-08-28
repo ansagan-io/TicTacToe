@@ -12,8 +12,10 @@
         <option name="modules">
           <set>
             <option value="$PROJECT_DIR$" />
+            <option value="$PROJECT_DIR$/Problems/Account Service" />
             <option value="$PROJECT_DIR$/Problems/Alternating Fibonacci numbers" />
             <option value="$PROJECT_DIR$/Problems/Bank account" />
+            <option value="$PROJECT_DIR$/Problems/Compact strings with AsciiCharSequence" />
             <option value="$PROJECT_DIR$/Problems/Composite numbers" />
             <option value="$PROJECT_DIR$/Problems/Employee" />
             <option value="$PROJECT_DIR$/Problems/Employees" />
