@@ -92,7 +92,7 @@ public class TicTacToe {
     }
 
     private static void checkWhoWin() {
-        int[][] scores = countScoresArr('X', 'O');
+        int[][] scores = countScoresArr(layoutArray,'X', 'O');
         int sum = 0;
         for (int i = 0; i < 8; i++) {
             sum += scores[0][i] + scores[1][i];
@@ -126,7 +126,7 @@ public class TicTacToe {
         System.out.println("---------");
     }
 
-    public static int[][] countScoresArr(char sign0, char sign1) {
+    public static int[][] countScoresArr(char[] board, char sign0, char sign1) {
         int[][] scores = new int[2][8];
         int length = 0;
         for (; length < 8; length++) {
@@ -134,10 +134,10 @@ public class TicTacToe {
             int count1 = 0;
             int[] temp = map.get(length);
             for (int index:temp) {
-                if (layoutArray[index] == sign0) {
+                if (board[index] == sign0) {
                     count0++;
                 }
-                if (layoutArray[index] == sign1) {
+                if (board[index] == sign1) {
                     count1++;
                 }
             }

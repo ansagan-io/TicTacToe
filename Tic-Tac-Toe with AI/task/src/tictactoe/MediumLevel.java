@@ -18,7 +18,7 @@ public class MediumLevel extends Player{
         }else {
             enemySign = 'X';
         }
-        int[][] scores = TicTacToe.countScoresArr(this.getSign(), enemySign);
+        int[][] scores = TicTacToe.countScoresArr(TicTacToe.getLayoutArray(), this.getSign(), enemySign);
 
         for (int i = 0; i < 8; i++) {
             if (scores[0][i] == 1) {
