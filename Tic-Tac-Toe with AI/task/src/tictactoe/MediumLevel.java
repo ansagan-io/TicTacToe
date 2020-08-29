@@ -21,14 +21,14 @@ public class MediumLevel extends Player{
         int[][] scores = TicTacToe.countScoresArr(this.getSign(), enemySign);
 
         for (int i = 0; i < 8; i++) {
-            if (scores[0][i] == 2){
+            if (scores[0][i] == 1) {
                 for (int spot : TicTacToe.map.get(i)) {
                     if(!TicTacToe.isOccupiedArr(spot)){
                         System.out.println("Making move level \"medium\"");
                         return spot;
                     }
                 }
-            } else if(scores[1][i] == 2){
+            } else if(scores[1][i] == 2) {
                 for (int spot : TicTacToe.map.get(i)) {
                     if(!TicTacToe.isOccupiedArr(spot)){
                         System.out.println("Making move level \"medium\"");
@@ -39,7 +39,7 @@ public class MediumLevel extends Player{
         }
         int x = random.nextInt(9);
         while (TicTacToe.isOccupiedArr(x)) {
-            x = random.nextInt(3);
+            x = random.nextInt(9);
         }
         System.out.println("Making move level \"medium\"");
         return x;

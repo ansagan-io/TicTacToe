@@ -7,8 +7,6 @@ abstract class Player {
         this.sign = sign;
     }
 
-    //public abstract int[] getXY();
-
     public abstract int getXArr();
 
     public char getSign() {

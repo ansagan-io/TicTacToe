@@ -1,132 +1,139 @@
 package tictactoe;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.Random;
 
 public class HardLevel extends Player {
-    private int fc = 0;
-
     private char enemySign;
-
+    private final Random random = new Random();
+    private int count = 0;
     public HardLevel(char sign) {
         super(sign);
     }
 
+    static class Move {
+        int index;
+    }
+
     @Override
     public int getXArr() {
-
         if(this.getSign() == 'X') {
-            enemySign = 'O';
+            this.enemySign = 'O';
         }else {
-            enemySign = 'X';
+            this.enemySign = 'X';
         }
-
-        Map<String, Integer> bestSpot = minimax(TicTacToe.getLayoutArray(), this.getSign());
-
-        return bestSpot.get("score");
+        if (count > 2) {
+            Move bestMove = findBestMove(TicTacToe.getLayoutArray());
+            System.out.println("Making move level \"hard\"");
+            return bestMove.index;
+        } else {
+            count++;
+            int x = random.nextInt(9);
+            while (TicTacToe.isOccupiedArr(x)) {
+                x = random.nextInt(9);
+            }
+            System.out.println("Making move level \"hard\"");
+            return x;
+        }
     }
 
-    private Map<String, Integer> minimax(char[] newBoard, char sign){
-        fc++;
-
-        int[] availableSpots = emptySpots(newBoard);
-
-        if (winning(newBoard, enemySign)){
-            return new HashMap<>(){
-                {
-                    put("score", -10);
-                }
-            };
-        }
-
-        else if (winning(newBoard, this.getSign())){
-            return new HashMap<>(){
-                {
-                    put("score", 10);
-                }
-            };
-        }
-        else if (availableSpots.length == 0){
-            return new HashMap<>(){
-                {
-                    put("score", 0);
-                }
-            };
-        }
-
-        ArrayList<Map<String, Integer>> moves = new ArrayList<>();
-
-        for (int availableSpot : availableSpots) {
-            //create an object for each and store the index of that spot that was stored as a number in the object's index key
-            Map<String, Integer> move = new HashMap<>();
-            move.put("index", (int) newBoard[availableSpot]);
-
-            // set the empty spot to the current player
-            newBoard[availableSpot] = sign;
-
-            //if collect the score resulted from calling minimax on the opponent of the current player
-            Map<String, Integer> result;
-            if (sign == this.getSign()) {
-                result = minimax(newBoard, this.enemySign);
-            } else {
-                result = minimax(newBoard, this.getSign());
-            }
-            move.put("score", result.get("score"));
-
-            //reset the spot to empty
-            newBoard[availableSpot] = Character.highSurrogate(move.get("index"));
-
-            // push the object to the array
-            moves.add(move);
-        }
-
-        // if it is the computer's turn loop over the moves and choose the move with the highest score
-        int bestMove = 0;
-        if(sign == this.getSign()){
-            int bestScore = -10000;
-            for(int i = 0; i < moves.size(); i++){
-                if(moves.get(i).get("score") > bestScore){
-                    bestScore = moves.get(i).get("score");
-                    bestMove = i;
-                }
-            }
-        }else {
-        // else loop over the moves and choose the move with the lowest score
-            int bestScore = 10000;
-            for(int i = 0; i < moves.size(); i++){
-                if(moves.get(i).get("score") < bestScore){
-                    bestScore = moves.get(i).get("score");
-                    bestMove = i;
-                }
-            }
-        }
-
-// return the chosen move (object) from the array to the higher depth
-        return moves.get(bestMove);
-    }
-
-    private boolean winning(char[] board, char player) {
-        return (board[0] == player && board[1] == player && board[2] == player) ||
-                (board[3] == player && board[4] == player && board[5] == player) ||
-                (board[6] == player && board[7] == player && board[8] == player) ||
-                (board[0] == player && board[3] == player && board[6] == player) ||
-                (board[1] == player && board[4] == player && board[7] == player) ||
-                (board[2] == player && board[5] == player && board[8] == player) ||
-                (board[0] == player && board[4] == player && board[8] == player) ||
-                (board[2] == player && board[4] == player && board[6] == player);
-    }
-
-    private int[] emptySpots(char[] newBoard) {
-        int[] spots = new int[9];
-        int length = 0;
-
+    private Move findBestMove(char[] board) {
+        int bestVal = -1000;
+        Move bestMove = new Move();
+        bestMove.index = -1;
+        // Traverse all cells, evaluate minimax function
+        // for all empty cells. And return the cell
+        // with optimal value.
         for (int i = 0; i < 9; i++) {
-            if (newBoard[i] == ' ') {
-                spots[length] = i;
-                length++;
+            if (board[i] == ' ') {
+                board[i] = this.getSign();
+                // compute evaluation function for this
+                // move.
+                int moveVal = minimax(board, 0, false);
+                // Undo the move
+                board[i] = ' ';
+                // If the value of the current move is
+                // more than the best value, then update
+                // best/
+                if (moveVal > bestVal) {
+                    bestMove.index = i;
+                    bestVal = moveVal;
+                }
             }
         }
-        return spots;
+        return bestMove;
+    }
+
+    private int minimax(char[] board, int depth, boolean isMax) {
+        int score = evaluate(board);
+        // If Maximizer has won the game
+        // return his/her evaluated score
+        if (score == 10) {
+            return score - depth;
+        }
+        // If Minimizer has won the game
+        // return his/her evaluated score
+        if (score == -10) {
+            return score + depth;
+        }
+        // If there are no more moves and
+        // no winner then it is a tie
+        if (!isMovesLeft(board))
+            return 0;
+        // If this maximizer's move
+        int best;
+        if (isMax) {
+            best = -1000;
+            // Traverse all cells
+            for (int i = 0; i < 9; i++) {
+                // Check if cell is empty
+                if (board[i] == ' ') {
+                    // Make the move
+                    board[i] = this.getSign();
+                    // Call minimax recursively and choose
+                    // the maximum value
+                    best = Math.max(best, minimax(board, depth + 1, !isMax));
+                    // Undo the move
+                    board[i] = ' ';
+                }
+            }
+        }
+        // If this minimizer's move
+        else {
+            best = 1000;
+            // Traverse all cells
+            for (int i = 0; i < 9; i++) {
+                // Check if cell is empty
+                if (board[i] == ' ') {
+                    // Make the move
+                    board[i] = enemySign;
+                    // Call minimax recursively and choose
+                    // the minimum value
+                    best = Math.min(best, minimax(board, depth + 1, !isMax));
+                    // Undo the move
+                    board[i] = ' ';
+                }
+            }
+        }
+        return best;
+    }
+
+    private int evaluate(char[] b) {
+        int[][] scores = TicTacToe.countScoresArr('X', 'O');
+        for (int i = 0; i < 8; i++) {
+            if (scores[0][i] == 3) {
+                return +10;
+            } else if (scores[1][i] == 3) {
+                return -10;
+            }
+        }
+        // Else if none of them have won then return 0
+        return 0;
+    }
+
+    private boolean isMovesLeft(char[] board) {
+        for (int i = 0; i < 3; i++)
+            if (board[i] == ' ')
+                return true;
+        return false;
     }
 }

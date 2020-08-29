@@ -41,7 +41,6 @@ public class TicTacToe {
     private static void startGame(String firstPlayer, String secondPlayer) {
         player1 = createPlayer(firstPlayer, 'X');
         player2 = createPlayer(secondPlayer, 'O');
-        printLayoutArray();
         enterCoordinateArr();
     }
 
